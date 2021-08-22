@@ -1,13 +1,26 @@
 import React, { Component } from 'react'
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, message } from 'antd';
+import {connect} from 'react-redux'
+import {createDemo1Action, createDemo2Action} from '../../redux/action_creators/test_action'
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import {reqLogin} from '../../api/index'
 import logo from './images/logo.png'
 import './css/login.less'
 
-export default class Login extends Component {
-    onFinish = (value) => {
-        console.log(value);
+class Login extends Component {
+    onFinish = async(value) => {
+        let {username, password} = value
+        let result = await reqLogin(username, password)
+        if(result.status === 0){
+            console.log('跳转到admin页面');
+        }else{
+            message.warn(result.msg, 1)
+        }
     }
+
+    // componentDidMount(){
+    //     console.log(this.props);
+    // }
 
     render() {
         return (
@@ -90,3 +103,11 @@ export default class Login extends Component {
         )
     }
 }
+
+export default connect(
+    state => ({test:state.test}),
+    {
+      demo1:createDemo1Action,
+      demo2:createDemo2Action,
+    }
+  )(Login)
