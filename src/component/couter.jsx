@@ -28,9 +28,9 @@ export default class Counter extends Component{
     incrementAsync = () => {
       let value = this.myRef.current.value
       // let count = this.state.count
-      setTimeout(() => {
-        this.props.increment(value)
-      }, 1000)
+    //   setTimeout(() => {
+        this.props.incrementAsync(value, 1000)
+    //   }, 1000)
     }
 
     render(){

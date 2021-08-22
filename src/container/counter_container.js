@@ -1,5 +1,5 @@
 import Counter from '../component/couter'
-import {incrementAction, decrementAction} from '../redux/action_type'
+import {incrementAction, decrementAction, createIncrementAsyncAction} from '../redux/action_type'
 
 import {connect} from 'react-redux'
 
@@ -23,6 +23,7 @@ export default connect(
     (state)=>({count: state}), 
     {
         increment: incrementAction,
-        decrement: decrementAction
+        decrement: decrementAction,
+        incrementAsync: createIncrementAsyncAction
     }
 )(Counter)
