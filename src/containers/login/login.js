@@ -1,18 +1,27 @@
 import React, { Component } from 'react'
 import { Form, Input, Button, message } from 'antd';
 import {connect} from 'react-redux'
-import {createDemo1Action, createDemo2Action} from '../../redux/action_creators/test_action'
+import {Redirect} from 'react-router-dom'
+import {createUserLoginInfoAction} from '../../redux/action_creators/login_action'
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import {reqLogin} from '../../api/index'
 import logo from './images/logo.png'
 import './css/login.less'
 
+
+@connect(
+    state => ({isLogin: state.userLoginInfo.isLogin}),
+    {
+        userLoginInfo:createUserLoginInfoAction
+    }
+)
 class Login extends Component {
     onFinish = async(value) => {
         let {username, password} = value
         let result = await reqLogin(username, password)
         if(result.status === 0){
-            console.log('跳转到admin页面');
+            this.props.userLoginInfo(result)
+            this.props.history.replace('/admin')
         }else{
             message.warn(result.msg, 1)
         }
@@ -23,6 +32,11 @@ class Login extends Component {
     // }
 
     render() {
+        const isLogin = this.props.isLogin
+        if(isLogin){
+            return <Redirect to='/admin'/>
+        }
+
         return (
             <div className="login">
                 <header>
@@ -104,10 +118,4 @@ class Login extends Component {
     }
 }
 
-export default connect(
-    state => ({test:state.test}),
-    {
-      demo1:createDemo1Action,
-      demo2:createDemo2Action,
-    }
-  )(Login)
+export default Login
