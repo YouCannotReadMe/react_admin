@@ -5,16 +5,9 @@ import {Redirect} from 'react-router-dom'
 import {createUserLoginInfoAction} from '../../redux/action_creators/login_action'
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import {reqLogin} from '../../api/index'
-import logo from './images/logo.png'
+import logo from '../../static/imgs/logo.png'
 import './css/login.less'
 
-
-@connect(
-    state => ({isLogin: state.userLoginInfo.isLogin}),
-    {
-        userLoginInfo:createUserLoginInfoAction
-    }
-)
 class Login extends Component {
     onFinish = async(value) => {
         let {username, password} = value
@@ -34,7 +27,7 @@ class Login extends Component {
     render() {
         const isLogin = this.props.isLogin
         if(isLogin){
-            return <Redirect to='/admin'/>
+            return <Redirect to='/admin/home'/>
         }
 
         return (
@@ -118,4 +111,9 @@ class Login extends Component {
     }
 }
 
-export default Login
+export default connect(
+    state => ({isLogin: state.userLoginInfo.isLogin}),
+    {
+        userLoginInfo:createUserLoginInfoAction
+    }
+)(Login)

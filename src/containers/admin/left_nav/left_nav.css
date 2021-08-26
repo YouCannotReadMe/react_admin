@@ -1,0 +1,18 @@
+.left_nav .title {
+  display: flex;
+  background-color: #001529;
+  padding: 10px;
+  align-items: center;
+}
+.left_nav .title img {
+  width: 60px;
+  height: 60px;
+  background-color: #fff;
+  border-radius: 50%;
+}
+.left_nav .title h1 {
+  font-size: 20px;
+  margin-bottom: 0;
+  color: white;
+  margin-left: 10px;
+}

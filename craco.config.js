@@ -1,5 +1,4 @@
 const CracoLessPlugin = require('craco-less');
-const decorators = require('@babel/plugin-proposal-decorators')
 
 module.exports = {
   plugins: [
@@ -14,11 +13,6 @@ module.exports = {
         },
       },
     },
-    {
-      plugin: decorators,
-      options:{
-          "legacy": true
-      }
-    }
+    
   ],
 };
