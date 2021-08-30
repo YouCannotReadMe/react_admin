@@ -7,6 +7,8 @@ import Header from './header/header'
 import LeftNav from './left_nav/left_nav'
 import Home from '../../component/home/home'
 import Product from '../product/product'
+import Detail from '../product/detail'
+import AddUpdate from '../product/add_update'
 import Category from '../category/category'
 import Role from '../role/role'
 import User from '../user/user'
@@ -19,7 +21,6 @@ const { Footer, Sider, Content } = Layout
 
 class Admin extends Component{
     componentDidMount(){
-        // console.log(this.props);
     }
 
 
@@ -29,7 +30,8 @@ class Admin extends Component{
     }
 
     render(){
-        let {isLogin, user} = this.props.userLoginInfo
+        const home = this.props.location.pathname.split('/')
+        let {isLogin} = this.props.userLoginInfo
         if(!isLogin){
             return <Redirect to='/login'/>
         }else{
@@ -45,7 +47,10 @@ class Admin extends Component{
                         <Content className="content">
                             <Switch>
                                 <Route path="/admin/home" component={Home}/>
-                                <Route path="/admin/prod_about/product" component={Product}/>
+                                <Route path="/admin/prod_about/product" component={Product} exact/>
+                                <Route path="/admin/prod_about/product/detail/:id" component={Detail} exact/>
+                                <Route path="/admin/prod_about/product/addUpdate" component={AddUpdate} exact/>
+                                <Route path="/admin/prod_about/product/addUpdate/:id" component={AddUpdate} exact/>
                                 <Route path="/admin/prod_about/category" component={Category}/>
                                 <Route path="/admin/role" component={Role}/>
                                 <Route path="/admin/user" component={User}/>
@@ -55,7 +60,10 @@ class Admin extends Component{
                                 <Redirect to="/admin/home"/>
                             </Switch>
                         </Content>
-                        <Footer className="footer">为了用户体验最佳，推荐使用谷歌浏览器 <button onClick={this.getCategoryList}>click me </button></Footer>
+                        {
+                            home.indexOf('home') !== -1 ? <Footer className="footer">为了用户体验最佳，推荐使用谷歌浏览器 </Footer> : ''
+                        }
+                        
                     </Layout>
                 </Layout>
                 

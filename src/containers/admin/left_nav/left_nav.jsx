@@ -6,8 +6,7 @@ import {createMenuTitleActive} from '../../../redux/action_creators/menu_action'
 import {
     HomeOutlined,
     DatabaseOutlined,
-    CalendarOutlined,
-    DropboxOutlined
+    CalendarOutlined
 } from '@ant-design/icons';
 import logo from '../../../static/imgs/logo.png'
 import './left_nav.less'
@@ -38,7 +37,10 @@ class LeftNav extends Component {
     }
 
     render() {
-        let pathKey = this.props.location.pathname.split('/').reverse()
+        // let pathKey = this.props.location.pathname.split('/').reverse()
+        let pathKey = this.props.location.pathname.split('/').indexOf('product')
+        if(pathKey !== -1) pathKey = 'product'
+        else pathKey = this.props.location.pathname.split('/').reverse()
         return (
             <div className="left_nav">
                 <div className="title">
@@ -48,8 +50,8 @@ class LeftNav extends Component {
                 <div style={{ width: '100%' }}>
 
                     <Menu
-                        defaultSelectedKeys={[pathKey[0]]}
-                        defaultOpenKeys={pathKey}
+                        selectedKeys={pathKey}
+                        defaultOpenKeys={this.props.location.pathname.split('/').reverse()}
                         mode="inline"
                         theme="dark"
                     >

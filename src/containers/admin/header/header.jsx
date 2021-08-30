@@ -66,6 +66,7 @@ class Header extends Component{
 
     getTitle = ()=> {
         let key = this.props.location.pathname.split('/').reverse()[0]
+        if(this.props.location.pathname.split('/').indexOf('product') !== -1) key = 'product'
         let title = ''
         menuConfig.forEach((item) => {
             if(item.children instanceof Array){
@@ -86,6 +87,7 @@ class Header extends Component{
         const {isScreenfull} = this.state
         const {user} = this.props.userLoginInfo
         let week = dayjs().$W;
+        week = week === 0 ? 7 : week
         return (
             <header>
                 <div className="header-top">

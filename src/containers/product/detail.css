@@ -1,0 +1,9 @@
+.prod-detail .header {
+  display: flex;
+  align-items: center;
+  font-size: 25px;
+}
+.prod-detail .prod-name {
+  font-size: 20px;
+  font-weight: 400;
+}
