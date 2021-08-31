@@ -5,24 +5,76 @@ import {ArrowLeftOutlined} from '@ant-design/icons'
 import {reqCategoryList} from '../../api/index'
 import UploadPictureWall from './upload_picture_wall'
 import RichTextEdite from './rich_text_edite'
-import {reqAddProduct} from '../../api/index'
+import {reqAddProduct, reqProductInfoById, reqUpdateProduct} from '../../api/index'
 const {Item} = Form
 const {Option} = Select
 
 class AddUpdate extends Component{
 
     state = {
-        categoryList: []
+        categoryList: [],
+        opareType: '',
+        name: '',
+        desc: '',
+        categoryId: '',
+        price: '',
+        detail: '',
+        imgs: [],
+        _id: ''
     }
 
     myUpload = React.createRef()
 
     componentDidMount(){
+        const {id} = this.props.match.params
+        const pList = this.props.getSaveProduct
+
         let categoryList = this.props.getSaveCategoryList
         if(categoryList instanceof Array){
             this.setState({categoryList})
         }
         else this.getCategoryList()
+
+        if(id){
+            this.setState({opareType: 'update'})
+            if(pList instanceof Array){
+                let result = pList.find((item) => {
+                    return item._id === id
+                })
+                this.setState({...result},() => {
+                    const {name, price, categoryId, desc} = this.state
+                    this.myFrom.setFieldsValue({
+                        name: name,
+                        price: price,
+                        categoryId: categoryId,
+                        desc: desc,
+                    })
+                })
+                this.myUpload.current.setFileList(result.imgs)
+                this.myRichText.setRichText(result.detail)
+                console.log(result);
+            }
+            else this.getProduct(id)
+        }
+
+    }
+
+    getProduct = async(id) => {
+        let {data, status} = await reqProductInfoById(id)
+        if(status === 0){
+            this.setState({...data},() => {
+                const {name, price, categoryId, desc} = this.state
+                this.myFrom.setFieldsValue({
+                    name: name,
+                    price: price,
+                    categoryId: categoryId,
+                    desc: desc,
+                })
+            })
+            this.myUpload.current.setFileList(data.imgs)
+            this.myRichText.setRichText(data.detail)
+        }
+        else message.error('请重新获取',1)
 
     }
 
@@ -38,9 +90,14 @@ class AddUpdate extends Component{
 
         let imgs = this.myUpload.current.getImgsNameArr()
         let detail = this.myRichText.getRichText()
-        let {status, data, msg} = await reqAddProduct({...value, imgs, detail })
+        let {_id} = this.state
+        let result
+        if(this.state.opareType === 'update') result = await reqUpdateProduct({...value, imgs, detail, _id })
+        else result = await reqAddProduct({...value, imgs, detail })
+        
+        let {status, data, msg} = result
         if(status === 0){
-            message.success('添加成功', 1)
+            message.success('操作成功', 1)
             this.props.history.replace('/admin/prod_about/product')
         }
         else message.error(msg, 1)
@@ -57,7 +114,7 @@ class AddUpdate extends Component{
                             <Button type="link" onClick={() => {this.props.history.goBack()}}>
                                 <ArrowLeftOutlined style={{fontSize: 25}}/>
                             </Button> 
-                            <span style={{fontSize: 20}}>添加商品</span>
+                            <span style={{fontSize: 20}}>{this.state.opareType === 'update' ? '修改商品' : '添加商品'}</span>
                         </div>
                     }
                     style={{ width: '100%' }}
@@ -68,6 +125,7 @@ class AddUpdate extends Component{
                         name="nest-messages" 
                         labelCol={{md: 2}}
                         wrapperCol={{md: 6}}
+                        ref={input => this.myFrom = input}
                     >
                         <Item
                             name="name"
@@ -108,7 +166,6 @@ class AddUpdate extends Component{
                         <Item
                             name="categoryId"
                             label="商品分类"
-                           
                             rules={[
                             {
                                 required: true,
@@ -119,6 +176,7 @@ class AddUpdate extends Component{
                              <Select
                                 style={{ width: '100%' }}
                                 placeholder='请选择'
+
                             >
                                 {
                                     this.state.categoryList.map((item) => {
@@ -169,7 +227,10 @@ class AddUpdate extends Component{
     }
 }
 export default connect(
-    state => ({getSaveCategoryList: state.saveCategory.categoryList}),
+    state => ({
+        getSaveCategoryList: state.saveCategory.categoryList,
+        getSaveProduct: state.saveProduct.product,
+    }),
     {
 
     }

@@ -13,6 +13,7 @@ class Product extends Component{
         productList: [],
         total: 0,
         searchType: 'productName',
+        current:'',
 
     }
 
@@ -23,16 +24,16 @@ class Product extends Component{
     }
 
     getProductList = async(pageNum = 1) => {
-        console.log(this.keyWord+"keywor");
+
         let keyWord = this.keyWord
 
         let result 
         if(!keyWord) keyWord = ''
         result = await reqSearchProductList(pageNum, PAGE_SIZE, this.state.searchType, keyWord )
-        console.log(result);
+ 
         let {data, status} = result
         if(status === 0) {
-            this.setState({productList: data.list, total: data.total})
+            this.setState({productList: data.list, total: data.total, current: pageNum})
             this.props.saveProduct(data.list)
         }
         else message.error('获取商品失败', 1)
@@ -112,7 +113,7 @@ class Product extends Component{
                 align: 'center',
                 render: (item) => (
                     <div>
-                        <Button 
+                        <Button
                             type={item.status === 1 ? 'danger' : 'primary'}
                             onClick={() => {this.updateProStatus(item)}}
                         >
@@ -130,7 +131,7 @@ class Product extends Component{
                     <div>
                         <Button type="link" onClick={() => {this.props.history.push(`/admin/prod_about/product/detail/${item._id}`)}}>详情</Button>
                         <br/>
-                        <Button type="link" onClick={() => {this.props.history.push('/admin/prod_about/product/addUpdate')}}>修改</Button>
+                        <Button type="link" onClick={() => {this.props.history.push(`/admin/prod_about/product/addUpdate/${item._id}`)}}>修改</Button>
                     </div>
                 )
             },
@@ -173,6 +174,7 @@ class Product extends Component{
                             position: ['bottomCenter'],
                             size: 'default',
                             pageSize: PAGE_SIZE,
+                            current: this.state.current,
                             onChange: this.getProductList
                         }}
                         

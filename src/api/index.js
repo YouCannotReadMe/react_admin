@@ -30,3 +30,5 @@ export const reqProductInfoById = (id) => axios.get(`${BASE_URL}/manage/product/
 export const reqRemovePicture = (name) => axios.post(`${BASE_URL}/manage/img/delete`, {name})
 
 export const reqAddProduct = (productObj) => axios.post(`${BASE_URL}/manage/product/add`, {...productObj})
+
+export const reqUpdateProduct = (productObj) => axios.post(`${BASE_URL}/manage/product/update`, {...productObj})

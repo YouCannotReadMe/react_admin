@@ -61,6 +61,15 @@ export default class PicturesWall extends Component {
     return result
   }
 
+  setFileList = (imgArr) => {
+    let fileList = []
+    imgArr.forEach((item, index) => {
+      fileList.push({uid: -index, status: 'done', name: item, url: `http://localhost:4000/upload/${item}`})
+      
+    })
+    this.setState({fileList})
+  }
+
   handleCancel = () => this.setState({ previewVisible: false });
 
   handlePreview = async file => {
@@ -77,6 +86,7 @@ export default class PicturesWall extends Component {
 
   handleChange = async({file, fileList }) => {
     if(file.status === 'done'){
+      console.log(file.response.data.url);
         fileList[fileList.length-1].url = file.response.data.url
         fileList[fileList.length-1].name = file.response.data.name
     }
